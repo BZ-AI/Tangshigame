@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唐诗三百首历史策略游戏</title>
+    <style>
+        body {
+            font-family: 'KaiTi', serif;
+            background-color: #F7E9D9;
+            color: #8B4513;
+            text-align: center;
+        }
+
+       .question {
+            margin: 20px;
+        }
+
+       .option {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #8B4513;
+            color: #F7E9D9;
+            border: none;
+            cursor: pointer;
+        }
+
+       .svg-container {
+            margin: 20px;
+        }
+
+       .read-button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #8B4513;
+            color: #F7E9D9;
+            border: none;
+            cursor: pointer;
+        }
+
+       .next-button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #8B4513;
+            color: #F7E9D9;
+            border: none;
+            cursor: pointer;
+        }
+
+       .restart-button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #8B4513;
+            color: #F7E9D9;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>唐诗三百首历史策略游戏</h1>
+    <div id="question-container" class="question"></div>
+    <div id="result-container" style="display: none;">
+        <p id="result-text"></p>
+        <button class="read-button" onclick="readPoem()">朗读诗词</button>
+        <button class="next-button" onclick="showNextQuestion()">下一题</button>
+        <button class="restart-button" onclick="restartGame()">回到开始</button>
+    </div>
+    <div class="svg-container" id="poem-container"></div>
+
+    <script>
+        const questions = [
+            {
+                title: "《盛唐气象》",
+                background: "贞观之治时期，大唐盛世",
+                characters: "李白、杜甫、玄宗皇帝",
+                poem: {
+                    title: "送杜少府之任蜀州",
+                    author: "王勃",
+                    content: [
+                        "城阙辅三秦",
+                        "风烟望五津",
+                        "与君离别意",
+                        "同是宦游人"
+                    ]
+                },
+                question: "面对安史之乱，你作为诗人会：",
+                options: [
+                    { label: "A. 留在长安继续创作", value: 'A' },
+                    { label: "B. 远走他乡避祸", value: 'B' }
+                ],
+                results: {
+                    A: "留守长安将亲历历史变革，可能创作出更多反映时代的诗篇",
+                    B: "避祸他乡可保全性命，但可能错过重要的创作素材"
+                }
+            },
+            {
+                title: "《边塞豪情》",
+                background: "唐朝边境战事频繁，将士戍边卫国",
+                characters: "王昌龄、王之涣",
+                poem: {
+                    title: "出塞二首·其一",
+                    author: "王昌龄",
+                    content: [
+                        "秦时明月汉时关",
+                        "万里长征人未还",
+                        "但使龙城飞将在",
+                        "不教胡马度阴山"
+                    ]
+                },
+                question: "若你是边塞诗人，更愿描写：",
+                options: [
+                    { label: "A. 塞外风光的壮美与孤寂", value: 'A' },
+                    { label: "B. 战争胜利的喜悦与豪情", value: 'B' }
+                ],
+                results: {
+                    A: "你能以独特视角展现边塞的神秘与苍凉，引发人们对边疆的遐想",
+                    B: "你的诗作可鼓舞士气，增强人们对国家的信心"
+                }
+            },
+            {
+                title: "《田园雅趣》",
+                background: "唐朝社会稳定，文人喜爱寄情田园",
+                characters: "王维、孟浩然",
+                poem: {
+                    title: "山居秋暝",
+                    author: "王维",
+                    content: [
+                        "空山新雨后",
+                        "天气晚来秋",
+                        "明月松间照",
+                        "清泉石上流"
+                    ]
+                },
+                question: "在田园生活中，你觉得最能体现闲适的是：",
+                options: [
+                    { label: "A. 清晨耕种劳作", value: 'A' },
+                    { label: "B. 傍晚溪边垂钓", value: 'B' }
+                ],
+                results: {
+                    A: "体验劳作的充实，更能感悟田园生活的质朴",
+                    B: "享受静谧时光，让心灵在自然中得到放松"
+                }
+            },
+            // 新增唐诗 1
+            {
+                title: "《相思之苦》",
+                background: "唐朝文人的离别与相思",
+                characters: "李白、杨贵妃",
+                poem: {
+                    title: "相思",
+                    author: "王维",
+                    content: [
+                        "红豆生南国",
+                        "春来发几枝",
+                        "愿君多采撷",
+                        "此物最相思"
+                    ]
+                },
+                question: "若你身处离别之苦，会如何排遣：",
+                options: [
+                    { label: "A. 借酒消愁", value: 'A' },
+                    { label: "B. 写诗寄情", value: 'B' }
+                ],
+                results: {
+                    A: "短暂的沉醉可忘却烦恼，但醒来后可能更添忧愁",
+                    B: "将情感寄托于文字，或许能得到些许慰藉"
+                }
+            },
+            // 新增唐诗 2
+            {
+                title: "《壮志豪情》",
+                background: "唐朝文人的报国之志",
+                characters: "岑参、高适",
+                poem: {
+                    title: "白雪歌送武判官归京",
+                    author: "岑参",
+                    content: [
+                        "北风卷地白草折",
+                        "胡天八月即飞雪",
+                        "忽如一夜春风来",
+                        "千树万树梨花开"
+                    ]
+                },
+                question: "若你有报国之志，会选择：",
+                options: [
+                    { label: "A. 投身军旅", value: 'A' },
+                    { label: "B. 以文报国", value: 'B' }
+                ],
+                results: {
+                    A: "在战场上挥洒热血，为国家立下战功",
+                    B: "用文字激励人心，为国家凝聚力量"
+                }
+            },
+            // 新增唐诗 3
+            {
+                title: "《羁旅之愁》",
+                background: "唐朝文人的漂泊生涯",
+                characters: "张继、温庭筠",
+                poem: {
+                    title: "枫桥夜泊",
+                    author: "张继",
+                    content: [
+                        "月落乌啼霜满天",
+                        "江枫渔火对愁眠",
+                        "姑苏城外寒山寺",
+                        "夜半钟声到客船"
+                    ]
+                },
+                question: "在羁旅途中，你最渴望：",
+                options: [
+                    { label: "A. 找到知己相伴", value: 'A' },
+                    { label: "B. 早日回到家乡", value: 'B' }
+                ],
+                results: {
+                    A: "知己相伴可解旅途寂寞，增添生活乐趣",
+                    B: "家乡的温暖能抚慰漂泊的心灵"
+                }
+            },
+            // 新增唐诗 4
+            {
+                title: "《怀古之情》",
+                background: "唐朝文人对历史的感慨",
+                characters: "杜牧、李商隐",
+                poem: {
+                    title: "赤壁",
+                    author: "杜牧",
+                    content: [
+                        "折戟沉沙铁未销",
+                        "自将磨洗认前朝",
+                        "东风不与周郎便",
+                        "铜雀春深锁二乔"
+                    ]
+                },
+                question: "面对历史遗迹，你会：",
+                options: [
+                    { label: "A. 感慨世事变迁", value: 'A' },
+                    { label: "B. 探寻历史真相", value: 'B' }
+                ],
+                results: {
+                    A: "岁月流转，一切都已物是人非，令人唏嘘",
+                    B: "试图揭开历史的面纱，还原真实的过往"
+                }
+            },
+            // 新增唐诗 5
+            {
+                title: "《送别之绪》",
+                background: "唐朝文人的送别场景",
+                characters: "王维、李白",
+                poem: {
+                    title: "渭城曲 / 送元二使安西",
+                    author: "王维",
+                    content: [
+                        "渭城朝雨浥轻尘",
+                        "客舍青青柳色新",
+                        "劝君更尽一杯酒",
+                        "西出阳关无故人"
+                    ]
+                },
+                question: "送别友人时，你会：",
+                options: [
+                    { label: "A. 默默祝福", value: 'A' },
+                    { label: "B. 赋诗留念", value: 'B' }
+                ],
+                results: {
+                    A: "将祝福藏在心底，希望友人一路平安",
+                    B: "用诗歌记录此刻，留下美好的回忆"
+                }
+            },
+            // 新增唐诗 6
+            {
+                title: "《闲适之趣》",
+                background: "唐朝文人的悠闲生活",
+                characters: "白居易、刘禹锡",
+                poem: {
+                    title: "钱塘湖春行",
+                    author: "白居易",
+                    content: [
+                        "孤山寺北贾亭西",
+                        "水面初平云脚低",
+                        "几处早莺争暖树",
+                        "谁家新燕啄春泥"
+                    ]
+                },
+                question: "在悠闲时光里，你喜欢：",
+                options: [
+                    { label: "A. 散步赏景", value: 'A' },
+                    { label: "B. 读书品茶", value: 'B' }
+                ],
+                results: {
+                    A: "漫步于自然之中，感受四季的变化",
+                    B: "在书的世界里遨游，品味茶香的韵味"
+                }
+            },
+            // 新增唐诗 7
+            {
+                title: "《仕途之艰》",
+                background: "唐朝文人的官场生涯",
+                characters: "韩愈、柳宗元",
+                poem: {
+                    title: "左迁至蓝关示侄孙湘",
+                    author: "韩愈",
+                    content: [
+                        "一封朝奏九重天",
+                        "夕贬潮州路八千",
+                        "欲为圣明除弊事",
+                        "肯将衰朽惜残年"
+                    ]
+                },
+                question: "面对仕途挫折，你会：",
+                options: [
+                    { label: "A. 继续抗争", value: 'A' },
+                    { label: "B. 归隐山林", value: 'B' }
+                ],
+                results: {
+                    A: "不向命运低头，坚持自己的理想",
+                    B: "远离官场纷争，寻找内心的宁静"
+                }
+            },
+            // 新增唐诗 8
+            {
+                title: "《思乡之念》",
+                background: "唐朝文人的思乡之情",
+                characters: "李白、杜甫",
+                poem: {
+                    title: "静夜思",
+                    author: "李白",
+                    content: [
+                        "床前明月光",
+                        "疑是地上霜",
+                        "举头望明月",
+                        "低头思故乡"
+                    ]
+                },
+                question: "在异乡的夜晚，你会：",
+                options: [
+                    { label: "A. 望月思乡", value: 'A' },
+                    { label: "B. 写信寄情", value: 'B' }
+                ],
+                results: {
+                    A: "明月寄托着对家乡的思念，让人倍感孤独",
+                    B: "将思念化为文字，传递给远方的亲人"
+                }
+            },
+            // 新增唐诗 9
+            {
+                title: "《友情之深》",
+                background: "唐朝文人的友情故事",
+                characters: "王勃、杨炯",
+                poem: {
+                    title: "送梓州李使君",
+                    author: "王维",
+                    content: [
+                        "万壑树参天",
+                        "千山响杜鹃",
+                        "山中一夜雨",
+                        "树杪百重泉"
+                    ]
+                },
+                question: "与好友分别后，你会：",
+                options: [
+                    { label: "A. 时常挂念", value: 'A' },
+                    { label: "B. 相约再见", value: 'B' }
+                ],
+                results: {
+                    A: "友情在心中，时刻想念着好友的一举一动",
+                    B: "期待着下次相聚，共同回忆美好的时光"
+                }
+            },
+            // 新增唐诗 10
+            {
+                title: "《哲理之思》",
+                background: "唐朝文人的哲学思考",
+                characters: "刘禹锡、白居易",
+                poem: {
+                    title: "酬乐天扬州初逢席上见赠",
+                    author: "刘禹锡",
+                    content: [
+                        "巴山楚水凄凉地",
+                        "二十三年弃置身",
+                        "沉舟侧畔千帆过",
+                        "病树前头万木春"
+                    ]
+                },
+                question: "面对人生困境，你会：",
+                options: [
+                    { label: "A. 乐观向前", value: 'A' },
+                    { label: "B. 消极沉沦", value: 'B' }
+                ],
+                results: {
+                    A: "困境只是暂时的，未来充满希望",
+                    B: "被困境打败，陷入无尽的痛苦之中"
+                }
+            },
+    {
+        title: "《月下独酌》情境",
+        background: "李白在月下独自饮酒，感慨万千",
+        characters: "李白、明月",
+        poem: {
+            title: "月下独酌四首·其一",
+            author: "李白",
+            content: [
+                "花间一壶酒",
+                "独酌无相亲",
+                "举杯邀明月",
+                "对影成三人"
+            ]
+        },
+        question: "若你如李白般月下独酌，会：",
+        options: [
+            { label: "A. 沉醉于美酒之中", value: 'A' },
+            { label: "B. 对着明月吟诗", value: 'B' }
+        ],
+        results: {
+            A: "忘却一切烦恼，沉浸在酒的世界里",
+            B: "用诗歌抒发内心的情感，与明月相伴"
+        }
+    },
+    {
+        title: "《登科后》之喜",
+        background: "孟郊科举及第后的喜悦心情",
+        characters: "孟郊",
+        poem: {
+            title: "登科后",
+            author: "孟郊",
+            content: [
+                "昔日龌龊不足夸",
+                "今朝放荡思无涯",
+                "春风得意马蹄疾",
+                "一日看尽长安花"
+            ]
+        },
+        question: "若你科举中第，会：",
+        options: [
+            { label: "A. 宴请亲朋好友", value: 'A' },
+            { label: "B. 游历大好河山", value: 'B' }
+        ],
+        results: {
+            A: "与亲朋好友分享喜悦，共度欢乐时光",
+            B: "欣赏祖国的壮丽山河，开阔眼界"
+        }
+    },
+    {
+        title: "《江雪》之境",
+        background: "寒冬腊月，柳宗元独自垂钓于江上",
+        characters: "柳宗元",
+        poem: {
+            title: "江雪",
+            author: "柳宗元",
+            content: [
+                "千山鸟飞绝",
+                "万径人踪灭",
+                "孤舟蓑笠翁",
+                "独钓寒江雪"
+            ]
+        },
+        question: "在这冰天雪地中，你会：",
+        options: [
+            { label: "A. 赶紧回家取暖", value: 'A' },
+            { label: "B. 继续享受这宁静", value: 'B' }
+        ],
+        results: {
+            A: "寒冷难耐，回家寻求温暖",
+            B: "沉浸在这宁静的氛围中，感受大自然的宁静之美"
+        }
+    },
+    {
+        title: "《观猎》之勇",
+        background: "王维观看到将军狩猎的壮观场面",
+        characters: "王维、将军",
+        poem: {
+            title: "观猎",
+            author: "王维",
+            content: [
+                "风劲角弓鸣",
+                "将军猎渭城",
+                "草枯鹰眼疾",
+                "雪尽马蹄轻"
+            ]
+        },
+        question: "若你是这位将军，会：",
+        options: [
+            { label: "A. 继续狩猎更多猎物", value: 'A' },
+            { label: "B. 收兵回营", value: 'B' }
+        ],
+        results: {
+            A: "享受狩猎的乐趣，追求更多的收获",
+            B: "适可而止，回营休整"
+        }
+    },
+    {
+        title: "《无题·相见时难别亦难》之情",
+        background: "李商隐与爱人离别时的不舍与思念",
+        characters: "李商隐、爱人",
+        poem: {
+            title: "无题·相见时难别亦难",
+            author: "李商隐",
+            content: [
+                "相见时难别亦难",
+                "东风无力百花残",
+                "春蚕到死丝方尽",
+                "蜡炬成灰泪始干"
+            ]
+        },
+        question: "若你与爱人离别，会：",
+        options: [
+            { label: "A. 默默流泪，不舍离去", value: 'A' },
+            { label: "B. 约定早日相见", value: 'B' }
+        ],
+        results: {
+            A: "沉浸在离别的悲伤中，难以释怀",
+            B: "给彼此一个期待，期待早日重逢"
+        }
+    },
+    {
+        title: "《赋得古原草送别》之思",
+        background: "白居易送别友人，借草表达离别之情",
+        characters: "白居易、友人",
+        poem: {
+            title: "赋得古原草送别",
+            author: "白居易",
+            content: [
+                "离离原上草",
+                "一岁一枯荣",
+                "野火烧不尽",
+                "春风吹又生"
+            ]
+        },
+        question: "送别友人时，你会以何种方式表达不舍：",
+        options: [
+            { label: "A. 折柳相送", value: 'A' },
+            { label: "B. 吟诗赠别", value: 'B' }
+        ],
+        results: {
+            A: "折柳寓意着挽留，希望友人留下",
+            B: "用诗歌表达内心的不舍与祝福"
+        }
+    },
+    {
+        title: "《过故人庄》之乐",
+        background: "孟浩然拜访老友，享受田园之乐",
+        characters: "孟浩然、老友",
+        poem: {
+            title: "过故人庄",
+            author: "孟浩然",
+            content: [
+                "故人具鸡黍",
+                "邀我至田家",
+                "绿树村边合",
+                "青山郭外斜"
+            ]
+        },
+        question: "在老友家，你最想做的是：",
+        options: [
+            { label: "A. 与老友畅聊农事", value: 'A' },
+            { label: "B. 欣赏田园风光", value: 'B' }
+        ],
+        results: {
+            A: "了解农事，感受乡村的生活气息",
+            B: "欣赏美丽的田园风光，放松心情"
+        }
+    },
+    {
+        title: "《凉州词二首·其一》之壮",
+        background: "王翰在边塞军中，与将士们饮酒作乐",
+        characters: "王翰、将士们",
+        poem: {
+            title: "凉州词二首·其一",
+            author: "王翰",
+            content: [
+                "葡萄美酒夜光杯",
+                "欲饮琵琶马上催",
+                "醉卧沙场君莫笑",
+                "古来征战几人回"
+            ]
+        },
+        question: "在这紧张的边塞氛围中，你会：",
+        options: [
+            { label: "A. 与将士们一同畅饮", value: 'A' },
+            { label: "B. 坚守岗位，准备战斗", value: 'B' }
+        ],
+        results: {
+            A: "与将士们同甘共苦，增强士气",
+            B: "时刻准备应对敌人的进攻，保卫边疆"
+        }
+    },
+    {
+        title: "《黄鹤楼》之叹",
+        background: "崔颢登上黄鹤楼，感慨万千",
+        characters: "崔颢",
+        poem: {
+            title: "黄鹤楼",
+            author: "崔颢",
+            content: [
+                "昔人已乘黄鹤去",
+                "此地空余黄鹤楼",
+                "黄鹤一去不复返",
+                "白云千载空悠悠"
+            ]
+        },
+        question: "面对这古老的黄鹤楼，你会：",
+        options: [
+            { label: "A. 吟诗抒怀", value: 'A' },
+            { label: "B. 静静观赏", value: 'B' }
+        ],
+        results: {
+            A: "用诗歌表达内心的感慨与思考",
+            B: "沉浸在这古老建筑的氛围中，感受历史的厚重"
+        }
+    },
+    {
+        title: "《早发白帝城》之快",
+        background: "李白被贬后遇赦，乘船顺流而下",
+        characters: "李白",
+        poem: {
+            title: "早发白帝城",
+            author: "李白",
+            content: [
+                "朝辞白帝彩云间",
+                "千里江陵一日还",
+                "两岸猿声啼不住",
+                "轻舟已过万重山"
+            ]
+        },
+        question: "若你也如李白般顺流而下，会：",
+        options: [
+            { label: "A. 欣赏沿途美景", value: 'A' },
+            { label: "B. 思考人生际遇", value: 'B' }
+        ],
+        results: {
+            A: "领略大自然的美丽风光，享受旅途的愉悦",
+            B: "回顾过去，思考人生的起伏与变化"
+        }
+    },
+    {
+        title: "《山居秋暝》之静",
+        background: "王维在山中隐居，享受宁静的生活",
+        characters: "王维",
+        poem: {
+            title: "山居秋暝",
+            author: "王维",
+            content: [
+                "竹喧归浣女",
+                "莲动下渔舟",
+                "随意春芳歇",
+                "王孙自可留"
+            ]
+        },
+        question: "在这宁静的山中，你会：",
+        options: [
+            { label: "A. 读书写字", value: 'A' },
+            { label: "B. 散步观景", value: 'B' }
+        ],
+        results: {
+            A: "在宁静的环境中读书写字，修身养性",
+            B: "漫步在山间，欣赏美丽的自然风光"
+        }
+    },
+    {
+        title: "《使至塞上》之景",
+        background: "王维出使边塞，途中所见壮丽景色",
+        characters: "王维",
+        poem: {
+            title: "使至塞上",
+            author: "王维",
+            content: [
+                "单车欲问边",
+                "属国过居延",
+                "征蓬出汉塞",
+                "归雁入胡天"
+            ]
+        },
+        question: "面对这塞外的壮丽景色，你会：",
+        options: [
+            { label: "A. 用画笔记录下来", value: 'A' },
+            { label: "B. 吟诗赞美", value: 'B' }
+        ],
+        results: {
+            A: "用画笔描绘出这美丽的塞外风光",
+            B: "用诗歌表达对塞外景色的赞美之情"
+        }
+    },
+    {
+        title: "《望岳》之志",
+        background: "杜甫年轻时游历泰山，胸怀壮志",
+        characters: "杜甫",
+        poem: {
+            title: "望岳",
+            author: "杜甫",
+            content: [
+                "岱宗夫如何",
+                "齐鲁青未了",
+                "造化钟神秀",
+                "阴阳割昏晓"
+            ]
+        },
+        question: "站在泰山脚下，你会：",
+        options: [
+            { label: "A. 立志攀登山顶", value: 'A' },
+            { label: "B. 欣赏泰山美景", value: 'B' }
+        ],
+        results: {
+            A: "挑战自我，立志攀登山顶，俯瞰众山",
+            B: "欣赏泰山的壮丽美景，感受大自然的魅力"
+        }
+    },
+    {
+        title: "《春望》之愁",
+        background: "安史之乱时期，杜甫被困长安，忧心国事",
+        characters: "杜甫",
+        poem: {
+            title: "春望",
+            author: "杜甫",
+            content: [
+                "国破山河在",
+                "城春草木深",
+                "感时花溅泪",
+                "恨别鸟惊心"
+            ]
+        },
+        question: "在这战乱时期，你会：",
+        options: [
+            { label: "A. 积极参与抗敌", value: 'A' },
+            { label: "B. 写诗抒发忧愁", value: 'B' }
+        ],
+        results: {
+            A: "为国家的安危贡献自己的力量",
+            B: "用诗歌表达内心的忧愁与对国家的担忧"
+        }
+    },
+    {
+        title: "《钱塘湖春行》之喜",
+        background: "白居易在钱塘湖游玩，欣赏春天的美景",
+        characters: "白居易",
+        poem: {
+            title: "钱塘湖春行",
+            author: "白居易",
+            content: [
+                "最爱湖东行不足",
+                "绿杨阴里白沙堤",
+                "乱花渐欲迷人眼",
+                "浅草才能没马蹄"
+            ]
+        },
+        question: "在这美丽的春天里，你会：",
+        options: [
+            { label: "A. 与友人一同赏花", value: 'A' },
+            { label: "B. 独自漫步欣赏", value: 'B' }
+        ],
+        results: {
+            A: "与友人分享春天的喜悦，一起欣赏美丽的花朵",
+            B: "独自享受这宁静的时光，感受春天的气息"
+        }
+    },
+    {
+        title: "《雁门太守行》之勇",
+        background: "李贺描写战争的激烈场面，将士们英勇奋战",
+        characters: "李贺、将士们",
+        poem: {
+            title: "雁门太守行",
+            author: "李贺",
+            content: [
+                "黑云压城城欲摧",
+                "甲光向日金鳞开",
+                "角声满天秋色里",
+                "塞上燕脂凝夜紫"
+            ]
+        },
+        question: "若你是战场上的将士，会：",
+        options: [
+            { label: "A. 冲锋陷阵，勇往直前", value: 'A' },
+            { label: "B. 坚守阵地，等待支援", value: 'B' }
+        ],
+        results: {
+            A: "勇敢地冲向敌人，为国家立下战功",
+            B: "坚守阵地，等待援军的到来，保卫国家"
+        }
+    },
+    {
+        title: "《泊秦淮》之叹",
+        background: "杜牧夜泊秦淮，感慨晚唐的衰败",
+        characters: "杜牧",
+        poem: {
+            title: "泊秦淮",
+            author: "杜牧",
+            content: [
+                "烟笼寒水月笼沙",
+                "夜泊秦淮近酒家",
+                "商女不知亡国恨",
+                "隔江犹唱后庭花"
+            ]
+        },
+        question: "面对这晚唐的衰败景象，你会：",
+        options: [
+            { label: "A. 写诗警醒世人", value: 'A' },
+            { label: "B. 默默叹息", value: 'B' }
+        ],
+        results: {
+            A: "用诗歌表达对国家命运的担忧，警醒世人",
+            B: "无奈地叹息，感慨时代的变迁"
+        }
+    },
+    {
+        title: "《贾生》之讽",
+        background: "李商隐借贾谊的遭遇，讽刺晚唐统治者",
+        characters: "李商隐、贾谊",
+        poem: {
+            title: "贾生",
+            author: "李商隐",
+            content: [
+                "宣室求贤访逐臣",
+                "贾生才调更无伦",
+                "可怜夜半虚前席",
+                "不问苍生问鬼神"
+            ]
+        },
+        question: "若你是李商隐，会：",
+        options: [
+            { label: "A. 继续写诗讽刺", value: 'A' },
+            { label: "B. 隐退山林", value: 'B' }
+        ],
+        results: {
+            A: "用诗歌揭露统治者的昏庸，希望引起重视",
+            B: "远离官场的纷争，过着隐居的生活"
+        }
+    },
+{
+                title: "《哲理之思》",
+                background: "唐朝文人的哲学思考",
+                characters: "刘禹锡、白居易",
+                poem: {
+                    title: "酬乐天扬州初逢席上见赠",
+                    author: "刘禹锡",
+                    content: [
+                        "巴山楚水凄凉地",
+                        "二十三年弃置身",
+                        "沉舟侧畔千帆过",
+                        "病树前头万木春"
+                    ]
+                },
+                question: "面对人生困境，你会：",
+                options: [
+                    { label: "A. 乐观向前", value: 'A' },
+                    { label: "B. 消极沉沦", value: 'B' }
+                ],
+                results: {
+                    A: "困境只是暂时的，未来充满希望",
+                    B: "被困境打败，陷入无尽的痛苦之中"
+                }
+            },
+            // 新增唐诗 11
+            {
+                title: "《山水之美》",
+                background: "唐朝文人游历山川，沉醉于自然美景",
+                characters: "李白、孟浩然",
+                poem: {
+                    title: "望庐山瀑布",
+                    author: "李白",
+                    content: [
+                        "日照香炉生紫烟",
+                        "遥看瀑布挂前川",
+                        "飞流直下三千尺",
+                        "疑是银河落九天"
+                    ]
+                },
+                question: "当你置身于如此壮丽的山水之间，会：",
+                options: [
+                    { label: "A. 即兴赋诗，抒发内心的赞叹", value: 'A' },
+                    { label: "B. 静静欣赏，用心感受自然的魅力", value: 'B' }
+                ],
+                results: {
+                    A: "用诗歌记录下这震撼的瞬间，让更多人领略山水之美",
+                    B: "沉浸在自然的怀抱中，忘却一切烦恼"
+                }
+            },
+            // 新增唐诗 12
+            {
+                title: "《月下情思》",
+                background: "唐朝的夜晚，明月高悬，文人墨客望月抒怀",
+                characters: "张九龄、张若虚",
+                poem: {
+                    title: "望月怀远",
+                    author: "张九龄",
+                    content: [
+                        "海上明月共潮生",
+                        "天涯共此时",
+                        "举头望明月",
+                        "低头思故乡"
+                    ]
+                },
+                question: "在这宁静的月夜，你最想：",
+                options: [
+                    { label: "A. 与远方的亲人倾诉思念之情", value: 'A' },
+                    { label: "B. 独自赏月，思考人生哲理", value: 'B' }
+                ],
+                results: {
+                    A: "将心中的思念传达给亲人，慰藉彼此的心灵",
+                    B: "在月光下反思自己的人生，寻找内心的宁静"
+                }
+            },
+            // 新增唐诗 13
+            {
+                title: "《宫廷风云》",
+                background: "唐朝宫廷内部的权力斗争和复杂关系",
+                characters: "武则天、上官婉儿",
+                poem: {
+                    title: "如意娘",
+                    author: "武则天",
+                    content: [
+                        "看朱成碧思纷纷",
+                        "憔悴支离为忆君",
+                        "不信比来长下泪",
+                        "开箱验取石榴裙"
+                    ]
+                },
+                question: "若你身处宫廷纷争，会：",
+                options: [
+                    { label: "A. 巧妙周旋，谋求自身的发展", value: 'A' },
+                    { label: "B. 远离是非，隐居山林", value: 'B' }
+                ],
+                results: {
+                    A: "在宫廷中展现自己的智慧和谋略，争取一席之地",
+                    B: "避开宫廷的纷争，追求平淡的生活"
+                }
+            },
+            // 新增唐诗 14
+            {
+                title: "《市井生活》",
+                background: "唐朝繁华的市井，人们的日常生活百态",
+                characters: "杜甫、白居易",
+                poem: {
+                    title: "卖炭翁",
+                    author: "白居易",
+                    content: [
+                        "卖炭翁，伐薪烧炭南山中",
+                        "满面尘灰烟火色",
+                        "两鬓苍苍十指黑",
+                        "卖炭得钱何所营"
+                    ]
+                },
+                question: "如果你是卖炭翁，面对炭价的波动，会：",
+                options: [
+                    { label: "A. 坚守价格，等待合适的买家", value: 'A' },
+                    { label: "B. 降低价格，尽快出手", value: 'B' }
+                ],
+                results: {
+                    A: "相信自己的炭品质好，总有识货的人愿意出高价",
+                    B: "为了生计，只能降低价格，尽快换回一些钱财"
+                }
+            },
+            // 新增唐诗 15
+            {
+                title: "《读书之乐》",
+                background: "唐朝文人崇尚读书，以诗书传家",
+                characters: "韩愈、柳宗元",
+                poem: {
+                    title: "劝学诗",
+                    author: "颜真卿",
+                    content: [
+                        "三更灯火五更鸡",
+                        "正是男儿读书时",
+                        "黑发不知勤学早",
+                        "白首方悔读书迟"
+                    ]
+                },
+                question: "对于读书，你更注重：",
+                options: [
+                    { label: "A. 广泛涉猎，增加知识储备", value: 'A' },
+                    { label: "B. 深入钻研，精通某一领域", value: 'B' }
+                ],
+                results: {
+                    A: "通过广泛阅读，拓宽自己的视野和知识面",
+                    B: "专注于某一领域，成为该领域的专家"
+                }
+            },
+            // 新增唐诗 16
+            {
+                title: "《音乐之韵》",
+                background: "唐朝音乐盛行，文人对音乐有着独特的感悟",
+                characters: "李龟年、白居易",
+                poem: {
+                    title: "琵琶行",
+                    author: "白居易",
+                    content: [
+                        "弦弦掩抑声声思",
+                        "似诉平生不得志",
+                        "低眉信手续续弹",
+                        "说尽心中无限事"
+                    ]
+                },
+                question: "当你听到一首动人心弦的音乐，会：",
+                options: [
+                    { label: "A. 随着音乐的节奏翩翩起舞", value: 'A' },
+                    { label: "B. 静静聆听，体会其中的情感", value: 'B' }
+                ],
+                results: {
+                    A: "用舞蹈来表达自己对音乐的喜爱和理解",
+                    B: "沉浸在音乐的世界里，感受音乐所传达的情感"
+                }
+            },
+            // 新增唐诗 17
+            {
+                title: "《友情之重》",
+                background: "唐朝文人之间的深厚友情，常常以诗相赠",
+                characters: "李白、王昌龄",
+                poem: {
+                    title: "闻王昌龄左迁龙标遥有此寄",
+                    author: "李白",
+                    content: [
+                        "杨花落尽子规啼",
+                        "闻道龙标过五溪",
+                        "我寄愁心与明月",
+                        "随风直到夜郎西"
+                    ]
+                },
+                question: "当好友遭遇挫折，你会：",
+                options: [
+                    { label: "A. 立刻前往陪伴，给予实际帮助", value: 'A' },
+                    { label: "B. 写诗鼓励，传递精神支持", value: 'B' }
+                ],
+                results: {
+                    A: "在朋友最需要的时候，陪在他身边，共同面对困难",
+                    B: "用诗歌表达自己的关心和鼓励，让朋友感受到温暖"
+                }
+            },
+            // 新增唐诗 18
+            {
+                title: "《春日之景》",
+                background: "唐朝的春天，万物复苏，生机勃勃",
+                characters: "贺知章、杜牧",
+                poem: {
+                    title: "咏柳",
+                    author: "贺知章",
+                    content: [
+                        "碧玉妆成一树高",
+                        "万条垂下绿丝绦",
+                        "不知细叶谁裁出",
+                        "二月春风似剪刀"
+                    ]
+                },
+                question: "在这美丽的春日里，你最想做的是：",
+                options: [
+                    { label: "A. 踏青赏花，感受大自然的美好", value: 'A' },
+                    { label: "B. 举行春日宴会，与友人欢聚", value: 'B' }
+                ],
+                results: {
+                    A: "漫步在春天的田野，欣赏繁花似锦的美景",
+                    B: "与友人相聚，在欢声笑语中度过美好的时光"
+                }
+            },
+            // 新增唐诗 19
+            {
+                title: "《冬日之寒》",
+                background: "唐朝的冬天，寒风凛冽，雪花纷飞",
+                characters: "岑参、刘长卿",
+                poem: {
+                    title: "逢雪宿芙蓉山主人",
+                    author: "刘长卿",
+                    content: [
+                        "日暮苍山远",
+                        "天寒白屋贫",
+                        "柴门闻犬吠",
+                        "风雪夜归人"
+                    ]
+                },
+                question: "在这寒冷的冬日，你会：",
+                options: [
+                    { label: "A. 围炉取暖，与家人共度温馨时光", value: 'A' },
+                    { label: "B. 冒雪出行，欣赏冬日雪景", value: 'B' }
+                ],
+                results: {
+                    A: "在温暖的炉火旁，与家人聊天，享受亲情的温暖",
+                    B: "不畏严寒，去感受冬日雪景的独特魅力"
+                }
+            },
+            // 新增唐诗 20
+            {
+                title: "《田园劳作》",
+                background: "唐朝文人参与田园劳作，体验农耕生活",
+                characters: "王维、孟浩然",
+                poem: {
+                    title: "归园田居·其三",
+                    author: "陶渊明",
+                    content: [
+                        "种豆南山下",
+                        "草盛豆苗稀",
+                        "晨兴理荒秽",
+                        "带月荷锄归"
+                    ]
+                },
+                question: "在田园劳作中，你觉得最辛苦的是：",
+                options: [
+                    { label: "A. 除草施肥，体力消耗大", value: 'A' },
+                    { label: "B. 抵御虫害，需要时刻留意", value: 'B' }
+                ],
+                results: {
+                    A: "长时间的体力劳动，让人感到疲惫不堪",
+                    B: "担心虫害会影响庄稼的收成，精神高度紧张"
+                }
+            },
+            // 新增唐诗 21
+            {
+                title: "《边塞烽火》",
+                background: "唐朝边疆战事紧张，烽火连天",
+                characters: "高适、岑参",
+                poem: {
+                    title: "燕歌行",
+                    author: "高适",
+                    content: [
+                        "汉家烟尘在东北",
+                        "汉将辞家破残贼",
+                        "男儿本自重横行",
+                        "天子非常赐颜色"
+                    ]
+                },
+                question: "若你是一名边塞士兵，面对战争，会：",
+                options: [
+                    { label: "A. 奋勇杀敌，保卫国家", value: 'A' },
+                    { label: "B. 渴望和平，希望早日结束战争", value: 'B' }
+                ],
+                results: {
+                    A: "为了国家和人民，不惜牺牲自己的生命",
+                    B: "战争带来的痛苦让你渴望和平，希望回到家乡"
+                }
+            },
+            // 新增唐诗 22
+            {
+                title: "《寺庙禅意》",
+                background: "唐朝寺庙众多，文人常在此寻求宁静与智慧",
+                characters: "常建、王维",
+                poem: {
+                    title: "题破山寺后禅院",
+                    author: "常建",
+                    content: [
+                        "清晨入古寺",
+                        "初日照高林",
+                        "竹径通幽处",
+                        "禅房花木深"
+                    ]
+                },
+                question: "在寺庙中，你最想：",
+                options: [
+                    { label: "A. 聆听高僧讲经，领悟佛法真谛", value: 'A' },
+                    { label: "B. 独自冥想，净化心灵", value: 'B' }
+                ],
+                results: {
+                    A: "从高僧的教诲中获得智慧和启示",
+                    B: "在宁静的氛围中，反思自己的内心世界"
+                }
+            },
+            // 新增唐诗 23
+            {
+                title: "《官场沉浮》",
+                background: "唐朝官场复杂，文人在仕途上历经坎坷",
+                characters: "韩愈、柳宗元",
+                poem: {
+                    title: "左迁至蓝关示侄孙湘",
+                    author: "韩愈",
+                    content: [
+                        "一封朝奏九重天",
+                        "夕贬潮州路八千",
+                        "欲为圣明除弊事",
+                        "肯将衰朽惜残年"
+                    ]
+                },
+                question: "若你在官场失意，会：",
+                options: [
+                    { label: "A. 继续努力，寻找机会东山再起", value: 'A' },
+                    { label: "B. 心灰意冷，归隐山林", value: 'B' }
+                ],
+                results: {
+                    A: "不放弃自己的理想，相信总有一天能够实现抱负",
+                    B: "对官场的黑暗感到失望，选择归隐山林，过平淡的生活"
+                }
+            },
+            // 新增唐诗 24
+            {
+                title: "《夜市繁华》",
+                background: "唐朝的夜市热闹非凡，人们尽情享受夜生活",
+                characters: "李白、杜甫",
+                poem: {
+                    title: "夜泊牛渚怀古",
+                    author: "李白",
+                    content: [
+                        "牛渚西江夜",
+                        "青天无片云",
+                        "登舟望秋月",
+                        "空忆谢将军"
+                    ]
+                },
+                question: "在繁华的夜市中，你最吸引你的是：",
+                options: [
+                    { label: "A. 各种美食小吃", value: 'A' },
+                    { label: "B. 精彩的表演节目", value: 'B' }
+                ],
+                results: {
+                    A: "品尝各种美味的小吃，满足味蕾的享受",
+                    B: "欣赏精彩的表演，感受热闹的氛围"
+                }
+            },
+            // 新增唐诗 25
+            {
+                title: "《中秋团圆》",
+                background: "唐朝的中秋节，人们团聚赏月，共庆佳节",
+                characters: "张九龄、王建",
+                poem: {
+                    title: "十五夜望月寄杜郎中",
+                    author: "王建",
+                    content: [
+                        "中庭地白树栖鸦",
+                        "冷露无声湿桂花",
+                        "今夜月明人尽望",
+                        "不知秋思落谁家"
+                    ]
+                },
+                question: "在中秋节，你最希望：",
+                options: [
+                    { label: "A. 与家人一起赏月，共享团圆之乐", value: 'A' },
+                    { label: "B. 与友人相聚，吟诗赏月", value: 'B' }
+                ],
+                results: {
+                    A: "在温馨的氛围中，与家人共度一个美好的夜晚",
+                    B: "与友人一起吟诗赏月，分享彼此的情感和思绪"
+                }
+            },
+            // 新增唐诗 26
+            {
+                title: "《夏日消暑》",
+                background: "唐朝的夏天，炎热难耐，人们寻找各种方式消暑",
+                characters: "白居易、刘禹锡",
+                poem: {
+                    title: "消暑",
+                    author: "白居易",
+                    content: [
+                        "何以消烦暑",
+                        "端坐一院中",
+                        "眼前无长物",
+                        "窗下有清风"
+                    ]
+                },
+                question: "在炎热的夏天，你会选择哪种方式消暑：",
+                options: [
+                    { label: "A. 到溪边戏水，享受清凉", value: 'A' },
+                    { label: "B. 坐在树下乘凉，读书品茶", value: 'B' }
+                ],
+                results: {
+                    A: "在溪水中嬉戏，感受清凉的水流，消除暑气",
+                    B: "在树荫下，一边读书品茶，一边享受宁静的时光"
+                }
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            const questionContainer = document.getElementById('question-container');
+            questionContainer.innerHTML = `
+                <p>篇章标题：《${question.title}》</p>
+                <p>历史背景：${question.background}</p>
+                <p>关键人物：${question.characters}</p>
+                <p>相关诗词：《${question.poem.title}》</p>
+                <p>${question.question}</p>
+            `;
+            question.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option.label;
+                button.onclick = () => chooseOption(option.value);
+                questionContainer.appendChild(button);
+            });
+        }
+
+        function chooseOption(option) {
+            const question = questions[currentQuestionIndex];
+            const resultText = document.getElementById('result-text');
+            const resultContainer = document.getElementById('result-container');
+            const questionContainer = document.getElementById('question-container');
+
+            resultText.textContent = question.results[option];
+
+            resultContainer.style.display = 'block';
+            questionContainer.style.display = 'none';
+
+            // 展示诗词卡片
+            const poem = question.poem;
+            const poemSvg = `
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg"> 
+  <!-- 卡片背景 -->
+  <rect width="800" height="600" fill="#F7E9D9"/>
+  
+  <!-- 古风纹样装饰 -->
+  <path d="M20 20 H780 V580 H20 Z" fill="none" stroke="#8B4513" stroke-width="2"/>
+  <path d="M40 40 H760 V560 H40 Z" fill="none" stroke="#8B4513" stroke-width="1"/>
+  
+  <!-- 标题区域 -->
+  <text x="400" y="100" font-family="KaiTi" font-size="32" text-anchor="middle" fill="#8B4513">
+    ${poem.title}
+  </text>
+  
+  <!-- 作者署名 -->
+  <text x="400" y="150" font-family="KaiTi" font-size="24" text-anchor="middle" fill="#8B4513">
+    ${poem.author}
+  </text>
+  
+  <!-- 诗词内容 -->
+  <text x="400" y="250" font-family="KaiTi" font-size="28" text-anchor="middle" fill="#8B4513">
+    ${poem.content[0]}
+  </text>
+  <text x="400" y="300" font-family="KaiTi" font-size="28" text-anchor="middle" fill="#8B4513">
+    ${poem.content[1]}
+  </text>
+  <text x="400" y="350" font-family="KaiTi" font-size="28" text-anchor="middle" fill="#8B4513">
+    ${poem.content[2]}
+  </text>
+  <text x="400" y="400" font-family="KaiTi" font-size="28" text-anchor="middle" fill="#8B4513">
+    ${poem.content[3]}
+  </text>
+  
+  <!-- 装饰元素 -->
+  <path d="M100 500 Q150 450 200 500 T300 500" fill="none" stroke="#8B4513" stroke-width="1"/>
+  <path d="M500 500 Q550 450 600 500 T700 500" fill="none" stroke="#8B4513" stroke-width="1"/>
+</svg>
+            `;
+            document.getElementById('poem-container').innerHTML = poemSvg;
+        }
+
+        function readPoem() {
+            const question = questions[currentQuestionIndex];
+            const poem = question.poem;
+            const poemText = poem.content.join('\n');
+
+            const synth = window.speechSynthesis;
+            const utterThis = new SpeechSynthesisUtterance(poemText);
+            utterThis.lang = 'zh-CN';
+
+            synth.speak(utterThis);
+        }
+
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                const resultContainer = document.getElementById('result-container');
+                const questionContainer = document.getElementById('question-container');
+                resultContainer.style.display = 'none';
+                questionContainer.style.display = 'block';
+                showQuestion();
+            } else {
+                alert('游戏结束，你已完成所有题目！');
+            }
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            const resultContainer = document.getElementById('result-container');
+            const questionContainer = document.getElementById('question-container');
+            resultContainer.style.display = 'none';
+            questionContainer.style.display = 'block';
+            showQuestion();
+        }
+
+        // 初始化显示第一个问题
+        showQuestion();
+    </script>
+</body>
+
+</html>
