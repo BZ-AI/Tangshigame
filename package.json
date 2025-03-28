@@ -1,0 +1,27 @@
+{
+  "name": "tang-poetry-game",
+  "version": "1.0.0",
+  "description": "唐诗三百首策略游戏",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve",
+    "deploy": "node deploy.js"
+  },
+  "keywords": [
+    "唐诗",
+    "古诗",
+    "策略游戏",
+    "中国文化",
+    "教育游戏"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/tang-poetry-game.git"
+  }
+} 
